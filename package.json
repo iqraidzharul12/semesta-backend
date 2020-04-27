@@ -4,15 +4,14 @@
   "private": true,
   "scripts": {
     "start": "npm run seed && nodemon -e ts --exec \"npm run compile && node ./dist/index.js\"",
-    "compile": "npm run tsc",
+    "compile": "tsc",
     "postinstall": "node ./bin/postinstall.js",
     "server": "pm2",
-    "seed": "npm run tsc && node ./dist/utilities/CustomSeed.js",
+    "seed": "tsc && node ./dist/utilities/CustomSeed.js",
     "build:development": "npm run seed && pm2 start ecosystem.config.js --env development --no-daemon",
     "build:stagging": "npm run seed && pm2 start ecosystem.config.js --env stagging --no-daemon",
     "build:production": "npm run seed && pm2 start ecosystem.config.js --env production --no-daemon",
-    "db": "typeorm",
-    "tsc": "tsc"
+    "db": "typeorm"
   },
   "dependencies": {
     "@hapi/hapi": "^18.4.1",
