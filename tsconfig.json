@@ -4,16 +4,16 @@
     "target": "es6",
     "strict": true,
     "strictPropertyInitialization": false,
-    "allowJs": true,
+    "allowJs": false,
     "sourceMap": true,
     "moduleResolution": "node",
     "outDir": "./dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "types": ["node"],
   },
   "include": [
     "./src/**/*",
+    "index.d.ts",
   ],
   "exclude": [
     "node_modules",
