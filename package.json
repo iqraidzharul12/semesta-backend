@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm run seed && nodemon -e ts --exec \"npm run compile && node ./dist/index.js\"",
+    "start": "nodemon -e ts --exec \"npm run compile && node ./dist/index.js\"",
     "compile": "tsc",
     "postinstall": "node ./bin/postinstall.js",
     "server": "pm2",
