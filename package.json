@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm run seed && nodemon -e ts --exec \"npm run compile && node ./dist/index.js\"",
-    "compile": "tsc",
+    "compile": "npm run tsc",
     "postinstall": "node ./bin/postinstall.js",
     "server": "pm2",
     "seed": "tsc && node ./dist/utilities/CustomSeed.js",
