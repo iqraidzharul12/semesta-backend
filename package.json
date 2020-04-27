@@ -11,7 +11,8 @@
     "build:development": "npm run seed && pm2 start ecosystem.config.js --env development --no-daemon",
     "build:stagging": "npm run seed && pm2 start ecosystem.config.js --env stagging --no-daemon",
     "build:production": "npm run seed && pm2 start ecosystem.config.js --env production --no-daemon",
-    "db": "typeorm"
+    "db": "typeorm",
+    "tsc":"tsc"
   },
   "dependencies": {
     "@hapi/hapi": "^18.4.1",
