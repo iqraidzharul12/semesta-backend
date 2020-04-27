@@ -1,17 +1,18 @@
 {
-  "name": "nodejs-server-app-vanilla",
+  "name": "semesta-backend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "npm run seed && nodemon -e ts --exec \"npm run compile && node ./dist/index.js\"",
-    "compile": "tsc",
+    "compile": "npm run tsc",
     "postinstall": "node ./bin/postinstall.js",
     "server": "pm2",
-    "seed": "tsc && node ./dist/utilities/CustomSeed.js",
+    "seed": "npm run tsc && node ./dist/utilities/CustomSeed.js",
     "build:development": "npm run seed && pm2 start ecosystem.config.js --env development --no-daemon",
     "build:stagging": "npm run seed && pm2 start ecosystem.config.js --env stagging --no-daemon",
     "build:production": "npm run seed && pm2 start ecosystem.config.js --env production --no-daemon",
-    "db": "typeorm"
+    "db": "typeorm",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@hapi/hapi": "^18.4.1",
