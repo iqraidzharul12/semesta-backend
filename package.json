@@ -1,21 +1,19 @@
 {
-  "name": "semesta-backend",
+  "name": "nodejs-server-app-vanilla",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "npm run seed && nodemon -e ts --exec \"npm run compile && node ./dist/index.js\"",
-    "compile": "npm run tsc",
+    "compile": "tsc",
     "postinstall": "node ./bin/postinstall.js",
     "server": "pm2",
-    "seed": "npm run tsc && node ./dist/utilities/CustomSeed.js",
+    "seed": "tsc && node ./dist/utilities/CustomSeed.js",
     "build:development": "npm run seed && pm2 start ecosystem.config.js --env development --no-daemon",
     "build:stagging": "npm run seed && pm2 start ecosystem.config.js --env stagging --no-daemon",
     "build:production": "npm run seed && pm2 start ecosystem.config.js --env production --no-daemon",
-    "db": "typeorm",
-    "tsc": "tsc"
+    "db": "typeorm"
   },
   "dependencies": {
-    "@hapi/boom": "^7.4.3",
     "@hapi/hapi": "^18.4.1",
     "@hapi/inert": "^5.2.1",
     "@types/puppeteer": "^1.19.0",
@@ -32,17 +30,7 @@
     "pg": "^7.11.0",
     "puppeteer": "^1.19.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.24",
-    "@types/crypto-js": "^3.1.43",
-    "@types/dotenv": "^6.1.1",
-    "@types/fs-extra": "^8.0.0",
-    "@types/hapi": "^18.0.2",
-    "@types/hapi__hapi": "^18.2.5",
-    "@types/hapi__inert": "^5.2.0",
-    "@types/jsonwebtoken": "^8.3.2",
-    "@types/node": "^12.7.2",
-    "@types/pg": "^7.4.14",
-    "typescript": "^3.5.3"
+    "typeorm": "^0.2.24"
   },
   "devDependencies": {
     "@types/crypto-js": "^3.1.43",
