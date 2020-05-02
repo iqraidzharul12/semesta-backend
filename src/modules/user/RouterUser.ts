@@ -5,6 +5,9 @@ const Routes: any = [
   {
     method: 'GET',
     path: '/user',
+    config: {
+      auth: false
+    },
     handler: (req: any, res: any): object => Users.getAllUser(req, res),
   },
   {
@@ -18,9 +21,20 @@ const Routes: any = [
     handler: (req: any, res: any): object => Users.getDirectDownline(req, res),
   },
   {
-    method: 'GET',
-    path: '/test-auth',
-    handler: (req: any, res: any): object => Users.testAuth(req, res),
+    method: 'POST',
+    path: '/user/generate',
+    config: {
+      auth: false
+    },
+    handler: (req: any, res: any): object => Users.generateUser(req, res),
+  },
+  {
+    method: 'POST',
+    path: '/user/activate',
+    config: {
+      auth: false
+    },
+    handler: (req: any, res: any): object => Users.activateUser(req, res),
   },
 ];
 

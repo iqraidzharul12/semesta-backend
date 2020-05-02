@@ -8,18 +8,18 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   @IsEmail()
   email: string;
 
-  @Column({ unique: true })
+  @Column({unique: true})
   userName: string;
 
-  @Column()
-  firstName: string;
+  @Column({nullable: true})
+  fullName: string;
 
   @Column()
-  lastName: string;
+  key: string;
 
   @Column()
   @MinLength(8)

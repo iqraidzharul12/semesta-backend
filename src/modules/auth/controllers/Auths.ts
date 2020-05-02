@@ -34,8 +34,7 @@ class Auths {
       let user = new User();
       user.email = req.payload.email;
       user.userName = req.payload.username;
-      user.firstName = req.payload.firstname;
-      user.lastName = req.payload.lastname;
+      user.fullName = req.payload.fullName;
       const uplinerID = req.payload.upliner;
       // user.password = sha256(req.headers.information).toString();
       // user.isActive = req.headers.post === 'true' ? true : false;
@@ -78,7 +77,7 @@ class Auths {
       await userRepository.save(user);
 
       const person = await userRepository.findOne({
-        select: [ "id", "email", "userName", "firstName", "lastName", "isActive" ],
+        select: [ "id", "email", "userName", "fullName", "isActive" ],
         where: {
           userName: req.payload.username,
         },

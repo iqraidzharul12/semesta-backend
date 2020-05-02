@@ -3,7 +3,6 @@ import 'dotenv/config';
 import * as jwt from 'jsonwebtoken';
 import * as Crypto from 'crypto-js';
 import { User } from '../model/entities';
-import { findJsonInString } from './String';
 
 export const sha256 = (message: string): string => {
   return Crypto.SHA256(message).toString();

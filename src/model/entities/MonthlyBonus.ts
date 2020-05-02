@@ -13,40 +13,40 @@ export class MonthlyBonus {
   @ManyToOne(type => Period, period => period.monthlyBonus)
   period: Period;
 
-  @Column()
+  @Column({default: 0})
   level0: number;
 
-  @Column()
+  @Column({default: 0})
   level1: number;
 
-  @Column()
+  @Column({default: 0})
   level2: number;
 
-  @Column()
+  @Column({default: 0})
   level3: number;
 
-  @Column()
+  @Column({default: 0})
   level4: number;
 
-  @Column()
+  @Column({default: 0})
   level5: number;
 
-  @Column()
+  @Column({default: 0})
   level6: number;
 
-  @Column()
+  @Column({default: 0})
   level7: number;
 
-  @Column()
+  @Column({default: 0})
   level8: number;
 
-  @Column()
+  @Column({default: 0})
   level9: number;
 
-  @Column()
+  @Column({default: 0})
   level10: number;
 
-  @Column()
+  @Column({default: 0})
   totalBonus: number;
 
   @Column()
