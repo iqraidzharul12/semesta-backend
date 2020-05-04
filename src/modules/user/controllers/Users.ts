@@ -100,7 +100,7 @@ class Users {
         user.isActive = false;
         let existed = true;
         while(existed){
-          user.userName = randomUserName("ET", "001");
+          user.userName = randomUserName("ETC", "001");
           const existingUser = await userRepository.findOne({
             where: {userName: user.userName}
           });
