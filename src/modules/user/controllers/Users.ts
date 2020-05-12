@@ -141,9 +141,9 @@ class Users {
         const userEmail = await userRepository.count({
           where: {email: user.email}
         })
-        if(userEmail){
-          return HttpResponse(401, 'Duplicate email address, please use a different email address.');
-        }
+        // if(userEmail){
+        //   return HttpResponse(401, 'Duplicate email address, please use a different email address.');
+        // }
 
         const upliner = await userRepository.findOne({
           where: {
