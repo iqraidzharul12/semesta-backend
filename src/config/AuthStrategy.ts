@@ -8,7 +8,7 @@ const validate = async (decoded: any, request: any): Promise<object> => { // esl
     let userRepository = getConnection().getRepository(User);
 
     const person: any = await userRepository.findOne({
-      userName: decoded.agent.userName,
+      username: decoded.agent.username,
       password: decoded.agent.password,
     });
     

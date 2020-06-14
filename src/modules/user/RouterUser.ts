@@ -22,6 +22,11 @@ const Routes: any = [
   },
   {
     method: 'POST',
+    path: '/user/downline/all',
+    handler: (req: any, res: any): object => Users.getAllDownLines(req, res),
+  },
+  {
+    method: 'POST',
     path: '/user/generate',
     config: {
       auth: false

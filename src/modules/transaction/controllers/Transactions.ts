@@ -28,7 +28,9 @@ class Transactions {
       const user = getUserFromToken(req.headers.content)
       if(user){
         let transactionRepository = getConnection().getRepository(Transaction);
-        const count = await transactionRepository.count();
+        const count = await transactionRepository.count({
+          where: {user: user},
+        });
         const content = await transactionRepository.find({
           where: {user: user},
           skip: first,
@@ -68,7 +70,7 @@ class Transactions {
 
       let userRepository = getConnection().getRepository(User);
       let user = await userRepository.findOne({
-        where: {userName: username},
+        where: {username: username},
         relations: ['upLine'],
       });
       let periodRepository = getConnection().getRepository(Period);
@@ -105,7 +107,7 @@ class Transactions {
 
             while(level < 11){
               let currentUser = await userRepository.findOne({
-                where: {userName: nextUserLevel.userName},
+                where: {username: nextUserLevel.username},
                 relations: ['upLine'],
               });
               if(currentUser){
@@ -198,6 +200,47 @@ class Transactions {
         }
       }
       return HttpResponse(400, "User not found");
+    } catch (error) {
+      if (error.message) return HttpResponse(400, error.message);
+      return HttpResponse(500, error);
+    }
+  }
+  static getTransactionByStockies = async (req: any, res: any): Promise<object> => {
+    try {
+      const pageNumber = req.payload.pageNumber;
+      const pageSize = req.payload.pageSize;
+      const first = pageNumber * pageSize;
+
+      const stockies = req.payload.stockies;
+      if(stockies){
+        let transactionRepository = getConnection().getRepository(Transaction);
+        const count = await transactionRepository.count({
+          where: {stockies: stockies},
+        });
+        const content = await transactionRepository.find({
+          where: {stockies: stockies},
+          skip: first,
+          take: pageSize,
+          order: { 
+            date: 'ASC' 
+          }, 
+          relations: ["user", "product"],
+        });
+
+        if (content) {
+          const data = {
+            totalElements: count,
+            pageSize,
+            pageNumber,
+            first: first+1,
+            last: first+content.length,
+            content,
+          }
+          return HttpResponse(200, data);
+        }
+        return HttpResponse(401, 'Transaction not found.');
+      }
+      return HttpResponse(401, 'Stockies not found.');
     } catch (error) {
       if (error.message) return HttpResponse(400, error.message);
       return HttpResponse(500, error);

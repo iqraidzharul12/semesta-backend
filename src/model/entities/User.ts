@@ -8,12 +8,12 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
-  @Column({ nullable: true })
-  // @IsEmail()
+  @Column({ unique: true, nullable: true })
+  @IsEmail()
   email: string;
 
   @Column({unique: true})
-  userName: string;
+  username: string;
 
   @Column({nullable: true})
   fullName: string;

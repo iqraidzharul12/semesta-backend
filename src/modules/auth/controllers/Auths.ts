@@ -1,7 +1,7 @@
  
 import { getConnection } from 'typeorm';
 import { validate } from 'class-validator';
-import { User } from '../../../model/entities';
+import { User, Stockies } from '../../../model/entities';
 import { HttpResponse, sha256, generateToken, getUserFromToken } from '../../../utilities';
 
 class Auths {
@@ -11,8 +11,8 @@ class Auths {
 
       const person = await userRepository.findOne({
         relations: ["downLines"],
-        // where: { userName: req.payload.username, password: sha256(req.headers.information).toString() },
-        where: { userName: req.payload.username, password: sha256(req.payload.password).toString() },
+        // where: { username: req.payload.username, password: sha256(req.headers.information).toString() },
+        where: { username: req.payload.username, password: sha256(req.payload.password).toString() },
       });
       if (person) {
         if (!person.isActive) return HttpResponse(401, 'This account is not activated yet, please contact your admin to activate it.');
@@ -29,11 +29,36 @@ class Auths {
     }
   }
 
+  static stockiesSignIn = async (req: any, res: any): Promise<object> => { // eslint-disable-line @typescript-eslint/no-unused-vars
+    try {
+      let stockiesRepository = getConnection().getRepository(Stockies);
+
+      const person = await stockiesRepository.findOne({
+        // where: { username: req.payload.username, password: sha256(req.headers.information).toString() },
+        where: { username: req.payload.username, password: sha256(req.payload.password).toString() },
+        relations: ['user']
+      });
+      if (person) {
+        if (!person.isActive) return HttpResponse(401, 'This account is not activated yet, please contact your admin to activate it.');
+        const exp: any = Math.floor(new Date().getTime()/1000) + 1*24*60*60;
+        const token: string = generateToken(person.user, exp);
+        delete person.password;
+        delete person.user.password;
+        return res.response(HttpResponse(200, person)).header('content', token).header('exp', exp);
+      }
+      return HttpResponse(401, 'Wrong combination username and password.');
+    } catch (error) {
+      console.log(error);
+      if (error.message) return HttpResponse(400, error.message);
+      return HttpResponse(500, error);
+    }
+  }
+
   static signUp = async (req: any, res: any): Promise<object> => {
     try {
       let user = new User();
       user.email = req.payload.email;
-      user.userName = req.payload.username;
+      user.username = req.payload.username;
       user.fullName = req.payload.fullName;
       const uplinerID = req.payload.upliner;
       // user.password = sha256(req.headers.information).toString();
@@ -45,7 +70,7 @@ class Auths {
 
       const upliner = await userRepository.findOne({
         where: {
-          userName: uplinerID,
+          username: uplinerID,
         },
       });
  
@@ -77,9 +102,9 @@ class Auths {
       await userRepository.save(user);
 
       const person = await userRepository.findOne({
-        select: [ "id", "email", "userName", "fullName", "isActive" ],
+        select: [ "id", "email", "username", "fullName", "isActive" ],
         where: {
-          userName: req.payload.username,
+          username: req.payload.username,
         },
       });
 

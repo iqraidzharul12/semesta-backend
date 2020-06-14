@@ -4,6 +4,7 @@ import { User } from '../../../model/entities';
 import { HttpResponse, getUserFromToken, sha256, randomUserName, randomKey} from '../../../utilities';
 import * as Crypto from 'crypto-js';
 import { validate } from 'class-validator';
+import { getAllDownLines, countDownline } from '../helper/helper';
 
 class Users {
   static getAllUser = async (req: any, res: any): Promise<object> => {
@@ -30,7 +31,7 @@ class Users {
 
       const person = await userRepository.findOne({
         relations: ["downLines"],
-        where: { userName: req.payload.username },
+        where: { username: req.payload.username },
       });
       if (person) {
         if (!person.isActive) return HttpResponse(401, 'This account is not activated yet, please contact your admin to activate it.');
@@ -53,7 +54,7 @@ class Users {
       let userRepository = getConnection().getRepository(User);
 
       const person = await userRepository.findOne({
-        where: { userName: req.payload.username },
+        where: { username: req.payload.username },
       });
 
       if (person) {
@@ -93,6 +94,8 @@ class Users {
 
       let savedUser = 0;
 
+      const addedUser: User[] = [];
+
       for (let i = 0; i < count; i++) {
         const user = new User();
         user.key = randomKey();
@@ -100,18 +103,26 @@ class Users {
         user.isActive = false;
         let existed = true;
         while(existed){
-          user.userName = randomUserName("ETC", "001");
+          user.username = randomUserName("ETC", "001");
           const existingUser = await userRepository.findOne({
-            where: {userName: user.userName}
+            where: {username: user.username}
           });
           if(!existingUser){
             existed = false;
             await userRepository.save(user);
             savedUser++;
+            delete user.password;
+            addedUser.push(user);
           }
         }
       }
-      return HttpResponse(200, "Successfully generate "+savedUser+" user.");
+
+      const res = {
+        message: "Successfully generate "+savedUser+" user.",
+        user: addedUser,
+      }
+
+      return HttpResponse(200, res);
 
       // return HttpResponse(400, "error at generating user");
     } catch (error) {
@@ -127,7 +138,7 @@ class Users {
 
       const user = await userRepository.findOne({
         where: {
-          userName:  req.payload.username,
+          username:  req.payload.username,
           key: req.payload.key,
           isActive: false,
         },
@@ -141,13 +152,13 @@ class Users {
         const userEmail = await userRepository.count({
           where: {email: user.email}
         })
-        // if(userEmail){
-        //   return HttpResponse(401, 'Duplicate email address, please use a different email address.');
-        // }
+        if(userEmail){
+          return HttpResponse(401, 'Duplicate email address, please use a different email address.');
+        }
 
         const upliner = await userRepository.findOne({
           where: {
-            userName: req.payload.upliner,
+            username: req.payload.upliner,
           },
         });
         if (upliner) {
@@ -173,9 +184,9 @@ class Users {
         await userRepository.save(user);
   
         const person = await userRepository.findOne({
-          select: [ "id", "email", "userName", "fullName", "isActive" ],
+          select: [ "id", "email", "username", "fullName", "isActive" ],
           where: {
-            userName: req.payload.username,
+            username: req.payload.username,
           },
         });
   
@@ -183,6 +194,40 @@ class Users {
         return HttpResponse(204, {});
       }
       return HttpResponse(401, 'User not found or already activated, please make sure you input correct user id and key.');
+    } catch (error) {
+      console.log(error);
+      if (error.message) return HttpResponse(400, error.message);
+      return HttpResponse(500, error);
+    }
+  }
+
+  static getAllDownLines = async (req: any, res: any): Promise<object> => {
+    try {
+      let userRepository = getConnection().getRepository(User);
+
+      const person = await userRepository.findOne({
+        where: { username: req.payload.username },
+      });
+
+      if (person) {
+        if (!person.isActive) return HttpResponse(401, 'This account is not activated yet, please contact your admin to activate it.');
+        delete person.password;
+
+        const level = 0
+
+        const user = await getAllDownLines(person, level);
+
+        const count = countDownline(user)
+
+        const result = {
+          user: [user],
+          count
+        }
+
+
+        return HttpResponse(200, result);
+      }
+      return HttpResponse(401, 'User not found.');
     } catch (error) {
       console.log(error);
       if (error.message) return HttpResponse(400, error.message);

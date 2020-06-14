@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { User, Transaction } from '.';
+import { MinLength } from 'class-validator';
 
 @Entity()
 export class Stockies {
@@ -9,6 +10,13 @@ export class Stockies {
 
   @Column({ unique: true })
   username: string;
+
+  @Column()
+  @MinLength(8)
+  password: string;
+
+  @Column()
+  key: string;
 
   @Column({ unique: true })
   name: string;
