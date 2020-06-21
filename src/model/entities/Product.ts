@@ -26,6 +26,9 @@ export class Product {
   @ManyToOne(type => TransactionBonusPlan, bonusPlan => bonusPlan.products)
   bonusPlan: TransactionBonusPlan;
 
+  @Column({nullable: true})
+  description: string;
+
   @Column()
   isActive: boolean;
 }

@@ -5,6 +5,7 @@ import { Stockies } from './Stockies';
 import { MonthlyBonus } from './MonthlyBonus';
 import { TransactionBonusPlan } from './TransactionBonusPlan';
 import { Period } from './Period';
+import { ProductExcellence } from './ProductExcellence';
 
 export {
   User,
@@ -14,4 +15,5 @@ export {
   MonthlyBonus,
   TransactionBonusPlan,
   Period,
+  ProductExcellence,
 };
