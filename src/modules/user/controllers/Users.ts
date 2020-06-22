@@ -4,7 +4,7 @@ import { User } from '../../../model/entities';
 import { HttpResponse, getUserFromToken, sha256, randomUserName, randomKey} from '../../../utilities';
 import * as Crypto from 'crypto-js';
 import { validate } from 'class-validator';
-import { getAllDownLines, countDownline } from '../helper/helper';
+import { getAllDownLines, countDownline, getDirectDownLines } from '../helper/helper';
 
 class Users {
   static getAllUser = async (req: any, res: any): Promise<object> => {
@@ -49,7 +49,7 @@ class Users {
     }
   }
 
-  static getDirectDownline = async (req: any, res: any): Promise<object> => {
+  static getDirectDownline2 = async (req: any, res: any): Promise<object> => {
     try {
       let userRepository = getConnection().getRepository(User);
 
@@ -223,8 +223,35 @@ class Users {
           user: [user],
           count
         }
+        return HttpResponse(200, result);
+      }
+      return HttpResponse(401, 'User not found.');
+    } catch (error) {
+      console.log(error);
+      if (error.message) return HttpResponse(400, error.message);
+      return HttpResponse(500, error);
+    }
+  }
 
+  static getDirectDownline = async (req: any, res: any): Promise<object> => {
+    try {
+      let userRepository = getConnection().getRepository(User);
 
+      const person = await userRepository.findOne({
+        where: { username: req.payload.username },
+      });
+
+      if (person) {
+        if (!person.isActive) return HttpResponse(401, 'This account is not activated yet, please contact your admin to activate it.');
+        delete person.password;
+
+        const level = 0
+
+        const user = await getDirectDownLines(person, level);
+
+        const result = {
+          user: [user],
+        }
         return HttpResponse(200, result);
       }
       return HttpResponse(401, 'User not found.');
