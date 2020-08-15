@@ -9,7 +9,6 @@ class Products {
 
       const data = await productRepository.find({
         where: { isActive: true },
-        order: { name: "ASC" },
       });
       if (data) {
         return HttpResponse(200, data);
