@@ -1,10 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { Transaction } from '.';
-import { TransactionBonusPlan } from './TransactionBonusPlan';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
+import { Transaction, StockiesPurchase, Period } from ".";
+import { TransactionBonusPlan } from "./TransactionBonusPlan";
 
 @Entity()
 export class Product {
-
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
@@ -15,18 +20,30 @@ export class Product {
   weight: number;
 
   @Column()
-  buy_price: number;
+  buyPrice: number;
 
   @Column()
-  sell_price: number;
+  stockiesPrice: number;
 
-  @OneToMany(type => Transaction, transaction => transaction.user)
+  @Column()
+  sellPrice: number;
+
+  @Column({ nullable: true })
+  variation: String;
+
+  @OneToMany((type) => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];
 
-  @ManyToOne(type => TransactionBonusPlan, bonusPlan => bonusPlan.products)
+  @OneToMany((type) => StockiesPurchase, (purchase) => purchase.product)
+  purchases: StockiesPurchase[];
+
+  @ManyToOne((type) => TransactionBonusPlan, (bonusPlan) => bonusPlan.products)
   bonusPlan: TransactionBonusPlan;
 
-  @Column({nullable: true})
+  @ManyToOne((type) => Period, (period) => period.products)
+  period: Period;
+
+  @Column({ nullable: true })
   description: string;
 
   @Column()

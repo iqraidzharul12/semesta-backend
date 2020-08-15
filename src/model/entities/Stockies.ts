@@ -1,10 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
-import { User, Transaction } from '.';
-import { MinLength } from 'class-validator';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from "typeorm";
+import { User, Transaction, StockiesPurchase, Village } from ".";
+import { MinLength } from "class-validator";
 
 @Entity()
 export class Stockies {
-
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
@@ -27,13 +34,22 @@ export class Stockies {
   @Column()
   currentStock: number;
 
-  @OneToOne(type => User)
+  @OneToOne((type) => User)
   @JoinColumn()
   user: User;
 
-  @OneToMany(type => Transaction, transaction => transaction.user)
+  @OneToMany((type) => Transaction, (transaction) => transaction.stockies)
   transactions: Transaction[];
-  
+
+  @OneToMany((type) => StockiesPurchase, (purchase) => purchase.stockies)
+  purchases: StockiesPurchase[];
+
+  @OneToMany((type) => User, (user) => user.stockiesReferal)
+  userList: User[];
+
+  @ManyToOne((type) => Village, (village) => village.stockies)
+  village: Village;
+
   @Column()
   isActive: boolean;
 }

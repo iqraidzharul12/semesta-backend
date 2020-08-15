@@ -2,14 +2,14 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { User, Period } from ".";
 
 @Entity()
-export class MonthlyBonus {
+export class MonthlyLevelBonus {
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.monthlyBonus)
+  @ManyToOne((type) => User, (user) => user.monthlyLevelBonus)
   user: User;
 
-  @ManyToOne((type) => Period, (period) => period.monthlyBonus)
+  @ManyToOne((type) => Period, (period) => period.monthlyLevelBonus)
   period: Period;
 
   @Column({ default: 0 })

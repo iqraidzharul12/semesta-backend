@@ -7,17 +7,20 @@ class Products {
     try {
       let productRepository = getConnection().getRepository(Product);
 
-      const data = await productRepository.find({isActive:true});
+      const data = await productRepository.find({
+        where: { isActive: true },
+        order: { name: "ASC" },
+      });
       if (data) {
         return HttpResponse(200, data);
       }
-      return HttpResponse(401, 'Data not found.');
+      return HttpResponse(401, "Data not found.");
     } catch (error) {
       console.log(error);
       if (error.message) return HttpResponse(400, error.message);
       return HttpResponse(500, error);
     }
-  }
+  };
 }
 
 export default Products;

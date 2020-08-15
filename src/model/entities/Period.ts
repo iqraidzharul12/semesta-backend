@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { MonthlyBonus } from '.';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { MonthlyBonus, Product, MonthlyLevelBonus } from ".";
 
 @Entity()
 export class Period {
@@ -18,8 +18,17 @@ export class Period {
   @Column()
   status: string;
 
-  @OneToMany(type => MonthlyBonus, monthlyBonus => monthlyBonus.period)
+  @OneToMany((type) => MonthlyBonus, (monthlyBonus) => monthlyBonus.period)
   monthlyBonus: MonthlyBonus[];
+
+  @OneToMany(
+    (type) => MonthlyLevelBonus,
+    (monthlyLevelBonus) => monthlyLevelBonus.period
+  )
+  monthlyLevelBonus: MonthlyLevelBonus[];
+
+  @OneToMany((type) => Product, (product) => product.period)
+  products: Product[];
 
   @Column()
   isActive: boolean;

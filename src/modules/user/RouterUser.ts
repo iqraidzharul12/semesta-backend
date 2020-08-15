@@ -1,45 +1,50 @@
- 
-import { Users } from './controllers';
+import { Users } from "./controllers";
 
 const Routes: any = [
   {
-    method: 'GET',
-    path: '/user',
+    method: "GET",
+    path: "/user",
     config: {
-      auth: false
+      auth: false,
     },
     handler: (req: any, res: any): object => Users.getAllUser(req, res),
   },
   {
-    method: 'POST',
-    path: '/user/current',
+    method: "POST",
+    path: "/user/current",
     handler: (req: any, res: any): object => Users.getUserByUsername(req, res),
   },
   {
-    method: 'POST',
-    path: '/user/downline',
+    method: "POST",
+    path: "/user/downline",
     handler: (req: any, res: any): object => Users.getDirectDownline(req, res),
   },
   {
-    method: 'POST',
-    path: '/user/downline/all',
+    method: "POST",
+    path: "/user/downline/all",
     handler: (req: any, res: any): object => Users.getAllDownLines(req, res),
   },
   {
-    method: 'POST',
-    path: '/user/generate',
+    method: "POST",
+    path: "/user/generate",
     config: {
-      auth: false
+      auth: false,
     },
     handler: (req: any, res: any): object => Users.generateUser(req, res),
   },
   {
-    method: 'POST',
-    path: '/user/activate',
+    method: "POST",
+    path: "/user/activate",
     config: {
-      auth: false
+      auth: false,
     },
     handler: (req: any, res: any): object => Users.activateUser(req, res),
+  },
+  {
+    method: "POST",
+    path: "/user/by-stockies",
+    handler: (req: any, res: any): object =>
+      Users.getAllUserByStockies(req, res),
   },
 ];
 

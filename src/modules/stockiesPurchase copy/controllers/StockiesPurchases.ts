@@ -6,11 +6,10 @@ import {
   Period,
   Product,
   Stockies,
+  StockiesPurchase,
   InternalMonthlyBonus,
-  Stock,
 } from "../../../model/entities";
 import { HttpResponse } from "../../../utilities";
-import { getUserFromToken } from "../../../utilities/HashEncrypt";
 
 class Transactions {
   static getAll = async (req: any, res: any): Promise<object> => {
@@ -27,24 +26,26 @@ class Transactions {
       return HttpResponse(500, error);
     }
   };
-  static getTransactionByUser = async (req: any, res: any): Promise<object> => {
+  static getStockiesPurchase = async (req: any, res: any): Promise<object> => {
     try {
       const pageNumber = req.payload.pageNumber;
       const pageSize = req.payload.pageSize;
       const first = pageNumber * pageSize;
+      const stockies = req.payload.stockies;
 
-      const user = getUserFromToken(req.headers.content);
-      if (user) {
-        let transactionRepository = getConnection().getRepository(Transaction);
-        const count = await transactionRepository.count({
-          where: { user: user },
+      if (stockies) {
+        let stockiesPurchaseRepository = getConnection().getRepository(
+          StockiesPurchase
+        );
+        const count = await stockiesPurchaseRepository.count({
+          where: { stockies: stockies },
         });
-        const content = await transactionRepository.find({
-          where: { user: user },
+        const content = await stockiesPurchaseRepository.find({
+          where: { stockies: stockies },
           skip: first,
           take: pageSize,
           order: {
-            date: "ASC",
+            date: "DESC",
           },
           relations: ["stockies", "product"],
         });
@@ -62,7 +63,7 @@ class Transactions {
         }
         return HttpResponse(401, "Transaction not found.");
       }
-      return HttpResponse(401, "User not found.");
+      return HttpResponse(401, "Stockies not found.");
     } catch (error) {
       if (error.message) return HttpResponse(400, error.message);
       return HttpResponse(500, error);
@@ -74,7 +75,7 @@ class Transactions {
       const date = req.payload.date;
       const stockiesID = req.payload.stockies;
       const productID = req.payload.product;
-      const count = Number.parseFloat(req.payload.count);
+      const count = req.payload.count;
 
       let userRepository = getConnection().getRepository(User);
       let user = await userRepository.findOne({
@@ -98,15 +99,6 @@ class Transactions {
         where: { id: stockiesID },
       });
       if (user && period && product && stockies && companyAccount) {
-        const stockRepository = getConnection().getRepository(Stock);
-        const stock = await stockRepository.findOne({
-          where: { stockies: stockies, product: product },
-        });
-
-        if (!stock) return HttpResponse(400, "You don't have this product");
-        if (stock && stock.count < count)
-          return HttpResponse(400, "Not enough stock");
-
         let transactionRepository = getConnection().getRepository(Transaction);
         const transaction = new Transaction();
         transaction.count = count;
@@ -330,11 +322,6 @@ class Transactions {
               internalMonthlyBonusCompany
             );
           }
-
-          stock.count -= count;
-          stockies.currentStock -= count;
-          await stockRepository.save(stock);
-          await stockiesRepository.save(stockies);
           // await queryRunner.commitTransaction();
           return HttpResponse(200, "Transaction succsesfully added");
         } catch (err) {
@@ -345,50 +332,6 @@ class Transactions {
         }
       }
       return HttpResponse(400, "User not found");
-    } catch (error) {
-      if (error.message) return HttpResponse(400, error.message);
-      return HttpResponse(500, error);
-    }
-  };
-  static getTransactionByStockies = async (
-    req: any,
-    res: any
-  ): Promise<object> => {
-    try {
-      const pageNumber = req.payload.pageNumber;
-      const pageSize = req.payload.pageSize;
-      const first = pageNumber * pageSize;
-
-      const stockies = req.payload.stockies;
-      if (stockies) {
-        let transactionRepository = getConnection().getRepository(Transaction);
-        const count = await transactionRepository.count({
-          where: { stockies: stockies },
-        });
-        const content = await transactionRepository.find({
-          where: { stockies: stockies },
-          skip: first,
-          take: pageSize,
-          order: {
-            date: "DESC",
-          },
-          relations: ["user", "product"],
-        });
-
-        if (content) {
-          const data = {
-            totalElements: count,
-            pageSize,
-            pageNumber,
-            first: first + 1,
-            last: first + content.length,
-            content,
-          };
-          return HttpResponse(200, data);
-        }
-        return HttpResponse(401, "Transaction not found.");
-      }
-      return HttpResponse(401, "Stockies not found.");
     } catch (error) {
       if (error.message) return HttpResponse(400, error.message);
       return HttpResponse(500, error);
