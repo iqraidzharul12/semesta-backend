@@ -46,6 +46,14 @@ const Routes: any = [
     handler: (req: any, res: any): object =>
       Users.getAllUserByStockies(req, res),
   },
+  {
+    method: "GET",
+    config: {
+      auth: false,
+    },
+    path: "/user/rename/{username}/{fullName}",
+    handler: (req: any, res: any): object => Users.editUserByUsername(req, res),
+  },
 ];
 
 export default Routes;
