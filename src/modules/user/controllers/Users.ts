@@ -629,6 +629,32 @@ class Users {
       return HttpResponse(500, error);
     }
   };
+  
+
+  static editUserByUsername = async (req: any, res: any): Promise<object> => {
+    try {
+      let userRepository = getConnection().getRepository(User);
+
+      const person = await userRepository.findOne({
+        where: { username: req.params.username },
+      });
+      if (person) {
+        if (!person.isActive)
+          return HttpResponse(
+            401,
+            "This account is not activated yet, please contact your admin to activate it."
+          );
+          person.fullName = req.params.fullName
+          userRepository.save(person)
+        return HttpResponse(200, "rename success");
+      }
+      return HttpResponse(401, "User not found.");
+    } catch (error) {
+      console.log(error);
+      if (error.message) return HttpResponse(400, error.message);
+      return HttpResponse(500, error);
+    }
+  };
 }
 
 export default Users;
